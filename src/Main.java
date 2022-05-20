@@ -1,5 +1,10 @@
+// Victor Gonçalves Tuda
+// GITHUB: https://github.com/victor-tuda
+// DESAFIO DESTINADO AO GFT START #5 JAVA - NA PLATAFORMA DA DIO.
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -24,9 +29,9 @@ public class Main {
         String cpf;
         int idade;
         String profissao;
-
         Scanner sc = new Scanner(System.in);
 
+        // Recebendo as variáveis
         System.out.println("CADASTRO DE CLIENTE");
         System.out.print("NOME: ");
         nome = sc.nextLine();
@@ -37,20 +42,20 @@ public class Main {
         System.out.print("IDADE: ");
         idade = sc.nextInt();
 
-        Cliente cli = new Cliente(nome, cpf, idade, profissao);
-        banco.getClientes().add(cli);
+        Cliente cli = new Cliente(nome, cpf, idade, profissao); // Criando um cliente com as variavies coletadas
+        banco.getClientes().add(cli); // Adicionando o cliente no registro do banco
     }
     public static void cadastrarContaCorrente(Banco banco){
         Cliente cli;
 
         System.out.println("CADASTRO DE CONTA CORRENTE");
-        cli = buscarCliente(banco);
+        cli = buscarCliente(banco); // Busca e retornar o cliente desejado
 
         if (cli != null) {
             ContaCorrente cc = new ContaCorrente(cli);
-            cli.getContas().add(cc);
-            cc.setCliente(cli);
-            banco.getContas().add(cc);
+            cli.getContas().add(cc); // Adiciona a conta no registro do cliente
+            cc.setCliente(cli); // Adiciona o cliente no registro da conta (ficou redundante, talvez eu pudesse ter feito de outra forma)
+            banco.getContas().add(cc); //Adiciona a conta no registro de contas do banco
         }
 
     }
@@ -107,14 +112,16 @@ public class Main {
         int validadorClienteConta = 0;
         Scanner sc = new Scanner(System.in);
 
+        // Instanciando o cliente e a conta fora do loop Do-While
         Cliente cli;
         Conta contaInput;
-        do {
+
+        do { // Loop para verificar se a conta chamada, existe nos registros do cliente.
             cli = buscarCliente(banco);
             contaInput = buscarConta(banco);
 
             if (cli.getContas() != null) { // Checa se o cliente possui contas
-                contasDoCliente = cli.getContas();
+                contasDoCliente = cli.getContas(); // Armazena as contas do cliente em uma lista
                 for (Conta conta : contasDoCliente) { // Itera entre as contas do cliente, buscando a conta inputada
                     if (conta == contaInput) { // Caso encontre, autoriza o validador
                         validadorClienteConta = 1;
@@ -125,12 +132,12 @@ public class Main {
                     System.out.println("Esse cliente não possui essa conta");
             } else
                 System.out.println("Esse cliente não tem contas abertas");
-        } while (validadorClienteConta == 0);
+        } while (validadorClienteConta == 0); // Sai do loop caso a conta esteja validada
 
         System.out.print("Digite o valor do saque: ");
         valorSaque = sc.nextDouble();
 
-        if (contaInput.getSaldo() >= valorSaque)
+        if (contaInput.getSaldo() >= valorSaque) // Verifica se o valor do saque é menor ou igual a quantia existente da conta
             contaInput.sacar(valorSaque);
         else System.out.println("Valor de saque indisponivel");
     }
@@ -140,6 +147,7 @@ public class Main {
         int validadorClienteConta = 0;
         Scanner sc = new Scanner(System.in);
 
+        // Instanciando cliente e conta, fora do loop Do-While
         Cliente cli;
         Conta contaInput;
         do {
@@ -147,7 +155,7 @@ public class Main {
             contaInput = buscarConta(banco);
 
             if (cli.getContas() != null) { // Checa se o cliente possui contas
-                contasDoCliente = cli.getContas();
+                contasDoCliente = cli.getContas(); // Armazena as contas do cliente em uma lista
                 for (Conta conta : contasDoCliente) { // Itera entre as contas do cliente, buscando a conta inputada
                     if (conta == contaInput) { // Caso encontre, autoriza o validador
                         validadorClienteConta = 1;
@@ -158,11 +166,76 @@ public class Main {
                     System.out.println("Esse cliente não possui essa conta");
             } else
                 System.out.println("Esse cliente não tem contas abertas");
-        } while (validadorClienteConta == 0);
+        } while (validadorClienteConta == 0); // Sai do loop caso a conta seja validada
 
         System.out.print("Digite o valor do depósito: ");
         valorDeposito = sc.nextDouble();
         contaInput.depositar(valorDeposito);
+    }
+    public static void transferencia(Banco banco){
+        double valorTransferencia;
+        List<Conta> contasDoCliente1;
+        List<Conta> contasDoCliente2;
+        int validadorClienteConta1 = 0;
+        int validadorClienteConta2 = 0;
+        Scanner sc = new Scanner(System.in);
+
+        Cliente cli1;
+        Conta contaInput1;
+        Cliente cli2;
+        Conta contaInput2;
+
+        // Os loops Do-While abaixo ficaram extensos e repetitivos, incluse com as funções de transação anteriores
+        // Poderia ter feito uma outra função para armazenar o loop e devolver um Map, contendo cliente e conta.
+
+        System.out.println("====DIGITE AS INFORMAÇÕES DO CLIENTE PAGANTE====");
+        // Validador do cliente 1
+        do {
+            cli1 = buscarCliente(banco);
+            contaInput1 = buscarConta(banco);
+
+            if (cli1.getContas() != null) { // Checa se o cliente possui contas
+                contasDoCliente1 = cli1.getContas();
+                for (Conta conta : contasDoCliente1) { // Itera entre as contas do cliente, buscando a conta inputada
+                    if (conta == contaInput1) { // Caso encontre, autoriza o validador
+                        validadorClienteConta1 = 1;
+                        break;
+                    }
+                }
+                if (validadorClienteConta1 == 0)
+                    System.out.println("Esse cliente não possui essa conta");
+            } else
+                System.out.println("Esse cliente não tem contas abertas");
+        } while (validadorClienteConta1 == 0);
+
+        System.out.println("====DIGITE AS INFORMAÇÕES DO CLIENTE RECEPTOR====");
+        // Validador do cliente 2
+        do {
+            cli2 = buscarCliente(banco);
+            contaInput2 = buscarConta(banco);
+
+            if (cli2.getContas() != null) { // Checa se o cliente possui contas
+                contasDoCliente1 = cli2.getContas();
+                for (Conta conta : contasDoCliente1) { // Itera entre as contas do cliente, buscando a conta inputada
+                    if (conta == contaInput2) { // Caso encontre, autoriza o validador
+                        validadorClienteConta2 = 1;
+                        break;
+                    }
+                }
+                if (validadorClienteConta2 == 0)
+                    System.out.println("Esse cliente não possui essa conta");
+            } else
+                System.out.println("Esse cliente não tem contas abertas");
+        } while (validadorClienteConta2 == 0);
+
+        System.out.print("Digite o valor da transferência: ");
+        valorTransferencia = sc.nextDouble();
+
+        if (contaInput1.getSaldo() >= valorTransferencia) {
+            contaInput1.sacar(valorTransferencia);
+            contaInput2.depositar(valorTransferencia);
+        }
+        else System.out.println("Valor de transferência indisponivel");
     }
 
     // MAIN
@@ -184,6 +257,7 @@ public class Main {
                 case 5 -> buscarConta(banco_gft); // BUSCAR UMA CONTA
                 case 6 -> depositar(banco_gft); // REALIZAR SAQUE EM UMA CONTA
                 case 7 -> sacar(banco_gft); // REALIZAR DEPÓSITO EM UMA CONTA
+                case 8 -> transferencia(banco_gft); // REALIZAR TRANSFERENCIA DE UMA CONTA A OUTRA
             }
         }while(option != 0);
 
