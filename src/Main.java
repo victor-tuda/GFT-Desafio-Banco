@@ -11,6 +11,9 @@ public class Main {
         System.out.println("[3] CADASTRAR CONTA POUPANÇA");
         System.out.println("[4] BUSCAR CLIENTE");
         System.out.println("[5] BUSCAR CONTA");
+        System.out.println("[6] DEPOSITAR EM CONTA");
+        System.out.println("[7] SACAR EM CONTA");
+        System.out.println("[8] TRANSFERÊNCIA");
         System.out.println("[0] VOLTAR");
         System.out.print("SELECIONE: ");
     }
@@ -65,7 +68,7 @@ public class Main {
         }
     }
 
-    // Funções de Buscar
+    // Funções de Busca
     public static Cliente buscarCliente(Banco banco){
         String cpf;
         Scanner sc = new Scanner(System.in);
@@ -97,6 +100,71 @@ public class Main {
         return null;
     }
 
+    // Funções de Transação
+    public static void sacar(Banco banco) {
+        double valorSaque;
+        List<Conta> contasDoCliente;
+        int validadorClienteConta = 0;
+        Scanner sc = new Scanner(System.in);
+
+        Cliente cli;
+        Conta contaInput;
+        do {
+            cli = buscarCliente(banco);
+            contaInput = buscarConta(banco);
+
+            if (cli.getContas() != null) { // Checa se o cliente possui contas
+                contasDoCliente = cli.getContas();
+                for (Conta conta : contasDoCliente) { // Itera entre as contas do cliente, buscando a conta inputada
+                    if (conta == contaInput) { // Caso encontre, autoriza o validador
+                        validadorClienteConta = 1;
+                        break;
+                    }
+                }
+                if (validadorClienteConta == 0)
+                    System.out.println("Esse cliente não possui essa conta");
+            } else
+                System.out.println("Esse cliente não tem contas abertas");
+        } while (validadorClienteConta == 0);
+
+        System.out.print("Digite o valor do saque: ");
+        valorSaque = sc.nextDouble();
+
+        if (contaInput.getSaldo() >= valorSaque)
+            contaInput.sacar(valorSaque);
+        else System.out.println("Valor de saque indisponivel");
+    }
+    public static void depositar(Banco banco){
+        double valorDeposito;
+        List<Conta> contasDoCliente;
+        int validadorClienteConta = 0;
+        Scanner sc = new Scanner(System.in);
+
+        Cliente cli;
+        Conta contaInput;
+        do {
+            cli = buscarCliente(banco);
+            contaInput = buscarConta(banco);
+
+            if (cli.getContas() != null) { // Checa se o cliente possui contas
+                contasDoCliente = cli.getContas();
+                for (Conta conta : contasDoCliente) { // Itera entre as contas do cliente, buscando a conta inputada
+                    if (conta == contaInput) { // Caso encontre, autoriza o validador
+                        validadorClienteConta = 1;
+                        break;
+                    }
+                }
+                if (validadorClienteConta == 0)
+                    System.out.println("Esse cliente não possui essa conta");
+            } else
+                System.out.println("Esse cliente não tem contas abertas");
+        } while (validadorClienteConta == 0);
+
+        System.out.print("Digite o valor do depósito: ");
+        valorDeposito = sc.nextDouble();
+        contaInput.depositar(valorDeposito);
+    }
+
     // MAIN
     public static void main(String[] args) {
         int option;
@@ -114,6 +182,8 @@ public class Main {
                 case 3 -> cadastrarContaPoupanca(banco_gft); // CRIAR UMA CONTA POUPANÇA
                 case 4 -> buscarCliente(banco_gft); // BUSCAR UM CLIENTE
                 case 5 -> buscarConta(banco_gft); // BUSCAR UMA CONTA
+                case 6 -> depositar(banco_gft); // REALIZAR SAQUE EM UMA CONTA
+                case 7 -> sacar(banco_gft); // REALIZAR DEPÓSITO EM UMA CONTA
             }
         }while(option != 0);
 

@@ -11,9 +11,15 @@ public abstract class Conta implements IConta {
         this.numero = SEQUENCIAL++;
     }
 
-    // Getters e Setters
+    // Getters
     public int getNumero() {
         return numero;
+    }
+    public double getSaldo() {return saldo;}
+
+    // Setters
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
     }
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;

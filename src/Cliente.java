@@ -9,6 +9,7 @@ public class Cliente {
     private String profissao;
     private List<Conta> contas = new ArrayList<>();
 
+    // Constructor
     public Cliente(String nome, String cpf, int idade, String profissao) {
         REGISTRO++;
         this.nome = nome;
@@ -17,6 +18,7 @@ public class Cliente {
         this.profissao = profissao;
     }
 
+    // Getters
     public List<Conta> getContas() {return contas;}
     public String getCpf() {return cpf;}
 
